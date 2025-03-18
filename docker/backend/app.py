@@ -251,7 +251,7 @@ def get_error_codes():
         'id': e.id, 'category': e.category, 'code': e.code
     } for e in error_codes])
 
-### SEEDING DES DONNEES ###
+### SEEDING DES DONNEES YEP###
 def seed_data():
     """ Insère des données de test à la création de la base de données """
 
