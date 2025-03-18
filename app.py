@@ -66,7 +66,7 @@ def send_email():
 
     try:
         server = smtplib.SMTP('mail', 587)  # 'mail' est le hostname du conteneur Docker Mailserver
-        server.starttls()
+        #server.starttls() désactivé car le serveur ne supporte pas le chiffrement TLS
         server.login('admin@camarol.local', 'P@ssw0rd!')
         message = f"Subject: {subject}\n\n{content}"
         server.sendmail(sender, recipient, message)
