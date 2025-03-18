@@ -1,10 +1,12 @@
+import smtplib
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
 
 # Configuration de la base de données PostgreSQL via SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:camarol2025@db/mailadmin'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -42,6 +44,25 @@ def validate_email(id):
     db.session.commit()
     
     return jsonify({'message': 'Email validé avec succès'})
+
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    data = request.json
+    sender = data['sender']
+    recipient = data['recipient']
+    subject = data['subject']
+    content = data['content']
+
+    try:
+        server = smtplib.SMTP('mail', 587)  # 'mail' est le hostname du conteneur Docker Mailserver
+        server.starttls()
+        server.login('admin@camarol.local', 'P@ssw0rd!')
+        message = f"Subject: {subject}\n\n{content}"
+        server.sendmail(sender, recipient, message)
+        server.quit()
+        return jsonify({'message': 'Email sent successfully!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Endpoint pour ajouter un e-mail suspect (simulé ou via intégration SMTP)
 @app.route('/emails/add', methods=['POST'])
