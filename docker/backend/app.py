@@ -243,6 +243,14 @@ def delete_log(id):
     db.session.commit()
     return jsonify({'message': 'Log supprimé'}), 200
 
+# Endpoint pour récupérer tous les codes d'erreur
+@app.route('/error-codes', methods=['GET'])
+def get_error_codes():
+    error_codes = ErrorCode.query.all()
+    return jsonify([{
+        'id': e.id, 'category': e.category, 'code': e.code
+    } for e in error_codes])
+
 ### SEEDING DES DONNEES ###
 def seed_data():
     """ Insère des données de test à la création de la base de données """
